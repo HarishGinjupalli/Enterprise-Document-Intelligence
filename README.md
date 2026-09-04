@@ -165,6 +165,3 @@ enterprise-document-intelligence/
 - Input validation on all endpoints
 - API keys never exposed to frontend
 
-## License
-
-MIT
