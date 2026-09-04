@@ -1,0 +1,26 @@
+[
+  {
+    "id": "eval-001",
+    "question": "What is the annual leave policy for employees?",
+    "expectedAnswer": "Employees receive 20 days of annual leave per year.",
+    "expectedDocuments": ["employee-handbook"],
+    "expectedPages": [18],
+    "shouldAbstain": false
+  },
+  {
+    "id": "eval-002",
+    "question": "What is the remote work policy?",
+    "expectedAnswer": "Remote work is allowed up to 3 days per week with manager approval.",
+    "expectedDocuments": ["employee-handbook"],
+    "expectedPages": [25],
+    "shouldAbstain": false
+  },
+  {
+    "id": "eval-003",
+    "question": "What is the company stock price today?",
+    "expectedAnswer": null,
+    "expectedDocuments": [],
+    "expectedPages": [],
+    "shouldAbstain": true
+  }
+]

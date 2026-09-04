@@ -1,0 +1,19 @@
+{
+  "name": "enterprise-document-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Production-grade Enterprise Document Intelligence RAG System",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "migrate": "npm run migrate --prefix backend",
+    "test": "npm test --prefix backend",
+    "evaluate": "node evaluation/run.js",
+    "build": "npm run build --prefix frontend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
