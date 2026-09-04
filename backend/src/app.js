@@ -10,6 +10,7 @@ import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';
 import documentRoutes from './routes/documents.js';
 import chatRoutes from './routes/chat.js';
+import metricsRoutes from './routes/metrics.js';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(`${apiPrefix}/health`, healthRoutes);
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/documents`, documentRoutes);
 app.use(`${apiPrefix}/chat`, chatRoutes);
+app.use(`${apiPrefix}/metrics`, metricsRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

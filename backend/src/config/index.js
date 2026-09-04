@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const config = {
   env: process.env.NODE_ENV || 'development',
@@ -14,7 +14,7 @@ const config = {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306', 10),
     user: process.env.DB_USER || 'edi_user',
-    password: process.env.DB_PASSWORD || 'edi_password',
+    password: process.env.DB_PASSWORD ?? 'edi_password',
     database: process.env.DB_NAME || 'enterprise_doc_intelligence',
     poolMin: parseInt(process.env.DB_POOL_MIN || '2', 10),
     poolMax: parseInt(process.env.DB_POOL_MAX || '10', 10),

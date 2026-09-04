@@ -45,14 +45,19 @@ export const documentsApi = {
       onUploadProgress: onProgress,
     }),
   status: (id) => api.get(`/documents/${id}/status`),
+  file: (id) => api.get(`/documents/${id}/file`, { responseType: 'blob' }),
   delete: (id) => api.delete(`/documents/${id}`),
 };
 
 export const chatApi = {
   send: (data) => api.post('/chat', data),
-  conversations: () => api.get('/chat/conversations'),
+  conversations: (params) => api.get('/chat/conversations', { params }),
   messages: (id) => api.get(`/chat/conversations/${id}`),
   feedback: (data) => api.post('/chat/feedback', data),
+};
+
+export const metricsApi = {
+  summary: (params) => api.get('/metrics/summary', { params }),
 };
 
 export const healthApi = {

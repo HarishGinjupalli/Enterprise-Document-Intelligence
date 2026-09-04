@@ -2,6 +2,8 @@
 
 Production-grade Enterprise Document Intelligence / RAG application demonstrating real AI engineering skills.
 
+> **New to this project?** See **[HOW_TO_RUN.md](./HOW_TO_RUN.md)** for a complete beginner step-by-step guide (VS Code + XAMPP + MySQL on Windows).
+
 ## Architecture
 
 ```mermaid

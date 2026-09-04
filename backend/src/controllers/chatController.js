@@ -147,11 +147,16 @@ export async function chat(req, res, next) {
 
 export async function getConversations(req, res, next) {
   try {
+    const page = Math.max(parseInt(req.query.page || '1', 10), 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit || '20', 10), 1), 100);
+    const offset = (page - 1) * limit;
+    const countRows = await query('SELECT COUNT(*) AS total FROM conversations WHERE user_id = ?', [req.user.id]);
     const rows = await query(
-      'SELECT id, title, created_at, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC LIMIT 50',
-      [req.user.id]
+      'SELECT id, title, created_at, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?',
+      [req.user.id, limit, offset]
     );
-    res.json({ success: true, data: { conversations: rows } });
+    const total = Number(countRows[0]?.total || 0);
+    res.json({ success: true, data: { conversations: rows, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } } });
   } catch (err) {
     next(err);
   }

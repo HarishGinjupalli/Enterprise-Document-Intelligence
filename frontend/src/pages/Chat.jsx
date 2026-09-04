@@ -83,11 +83,24 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [conversationId, setConversationId] = useState(null);
+  const [conversations, setConversations] = useState([]);
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    chatApi.conversations().then((res) => setConversations(res.data.data.conversations || [])).catch(() => {});
+  }, []);
+
+  const loadConversation = async (id) => {
+    const res = await chatApi.messages(id);
+    setConversationId(id);
+    setMessages(res.data.data.messages || []);
+  };
+
+  const startConversation = () => { setConversationId(null); setMessages([]); setError(''); };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -134,7 +147,16 @@ export default function Chat() {
         <p>Ask questions about your documents</p>
       </div>
 
-      <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(180px, 240px) 1fr', gap: '1rem', flex: 1, minHeight: 0 }}>
+        <aside className="card" style={{ overflowY: 'auto' }}>
+          <button className="btn btn-primary" onClick={startConversation} style={{ width: '100%', marginBottom: '0.75rem' }}>New conversation</button>
+          {conversations.map((conversation) => (
+            <button key={conversation.id} onClick={() => loadConversation(conversation.id)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.6rem', marginBottom: '0.35rem', background: conversation.id === conversationId ? 'var(--color-border)' : 'transparent', border: 0, cursor: 'pointer' }}>
+              {conversation.title || 'Untitled conversation'}
+            </button>
+          ))}
+        </aside>
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
           {messages.length === 0 && (
             <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '2rem' }}>
@@ -161,6 +183,7 @@ export default function Chat() {
             Send
           </button>
         </form>
+        </div>
       </div>
     </div>
   );

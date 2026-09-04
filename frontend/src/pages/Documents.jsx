@@ -22,7 +22,7 @@ export default function Documents() {
   const fetchDocuments = async () => {
     try {
       const res = await documentsApi.list({ search: search || undefined });
-      setDocuments(res.data.data.documents);
+      setDocuments(res.data.data.documents || []);
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load documents');
     } finally {

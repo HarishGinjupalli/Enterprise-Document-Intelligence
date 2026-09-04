@@ -76,13 +76,27 @@ export async function uploadDocument(req, res, next) {
 export async function getDocuments(req, res, next) {
   try {
     const { page, limit, status, search } = req.query;
-    const documents = await listDocuments(req.user.id, {
+    const result = await listDocuments(req.user.id, {
       page: parseInt(page || '1', 10),
       limit: parseInt(limit || '20', 10),
       status,
       search,
     });
-    res.json({ success: true, data: { documents } });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function downloadDocument(req, res, next) {
+  try {
+    const doc = await getDocumentById(req.params.id);
+    if (!doc) throw new AppError('Document not found', 404, 'NOT_FOUND');
+    const hasAccess = await userHasDocumentAccess(req.user.id, doc.id);
+    if (!hasAccess) throw new AppError('Access denied', 403, 'FORBIDDEN');
+    res.sendFile(path.resolve(doc.file_path), { headers: { 'Content-Type': 'application/pdf' } }, (err) => {
+      if (err && !res.headersSent) next(err);
+    });
   } catch (err) {
     next(err);
   }

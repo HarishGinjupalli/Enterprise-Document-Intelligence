@@ -8,12 +8,20 @@ export default function DocumentDetail() {
   const [doc, setDoc] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [fileUrl, setFileUrl] = useState('');
 
   useEffect(() => {
+    let nextFileUrl = '';
     documentsApi.get(id)
-      .then((res) => setDoc(res.data.data.document))
+      .then(async (res) => {
+        setDoc(res.data.data.document);
+        const file = await documentsApi.file(id);
+        nextFileUrl = URL.createObjectURL(file.data);
+        setFileUrl(nextFileUrl);
+      })
       .catch((err) => setError(err.response?.data?.error?.message || 'Failed to load'))
       .finally(() => setLoading(false));
+    return () => { if (nextFileUrl) URL.revokeObjectURL(nextFileUrl); };
   }, [id]);
 
   if (loading) return <LoadingSpinner />;
@@ -50,6 +58,12 @@ export default function DocumentDetail() {
           <p className="error-message" style={{ marginTop: '1rem' }}>Error: {doc.error_message}</p>
         )}
       </div>
+      {fileUrl && (
+        <div className="card" style={{ marginTop: '1.5rem' }}>
+          <h3>Document preview</h3>
+          <iframe title="PDF document preview" src={fileUrl} style={{ width: '100%', height: '70vh', border: 0, marginTop: '1rem' }} />
+        </div>
+      )}
     </div>
   );
 }

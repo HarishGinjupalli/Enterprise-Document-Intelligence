@@ -7,6 +7,7 @@ import {
   getDocument,
   removeDocument,
   getDocumentStatus,
+  downloadDocument,
 } from '../controllers/documentController.js';
 
 const router = Router();
@@ -16,6 +17,7 @@ router.use(authenticate);
 router.post('/upload', uploadMiddleware, uploadDocument);
 router.get('/', getDocuments);
 router.get('/:id/status', getDocumentStatus);
+router.get('/:id/file', downloadDocument);
 router.get('/:id', getDocument);
 router.delete('/:id', removeDocument);
 

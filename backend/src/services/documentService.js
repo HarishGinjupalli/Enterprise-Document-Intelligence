@@ -44,9 +44,7 @@ export async function getDocumentById(id) {
 
 export async function listDocuments(userId, { page = 1, limit = 20, status, search } = {}) {
   const offset = (page - 1) * limit;
-  let sql = `
-    SELECT d.id, d.title, d.filename, d.status, d.document_type, d.department,
-           d.page_count, d.file_size_bytes, d.created_at, d.updated_at
+  let whereSql = `
     FROM documents d
     LEFT JOIN document_permissions dp ON d.id = dp.document_id AND dp.user_id = ?
     WHERE d.deleted_at IS NULL
@@ -57,19 +55,22 @@ export async function listDocuments(userId, { page = 1, limit = 20, status, sear
   const params = [userId, userId, userId, userId];
 
   if (status) {
-    sql += ' AND d.status = ?';
+    whereSql += ' AND d.status = ?';
     params.push(status);
   }
   if (search) {
-    sql += ' AND (d.title LIKE ? OR d.filename LIKE ?)';
+    whereSql += ' AND (d.title LIKE ? OR d.filename LIKE ?)';
     params.push(`%${search}%`, `%${search}%`);
   }
 
-  sql += ' ORDER BY d.created_at DESC LIMIT ? OFFSET ?';
-  params.push(limit, offset);
-
-  const rows = await query(sql, params);
-  return rows;
+  const countRows = await query(`SELECT COUNT(DISTINCT d.id) AS total ${whereSql}`, params);
+  const rows = await query(`
+    SELECT d.id, d.title, d.filename, d.status, d.document_type, d.department,
+           d.page_count, d.file_size_bytes, d.created_at, d.updated_at
+    ${whereSql}
+    ORDER BY d.created_at DESC LIMIT ? OFFSET ?`, [...params, limit, offset]);
+  const total = Number(countRows[0]?.total || 0);
+  return { documents: rows, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
 }
 
 export async function deleteDocument(id, userId) {

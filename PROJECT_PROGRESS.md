@@ -6,6 +6,12 @@
 
 Last updated: 2026-09-04
 
+## Recently Completed
+- Metrics summary API and real Metrics page values
+- Paginated document and conversation responses
+- Conversation history sidebar and switching
+- Access-controlled PDF preview on document details
+
 ---
 
 ## Completed Phases
